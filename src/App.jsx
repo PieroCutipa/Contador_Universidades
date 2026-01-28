@@ -1,6 +1,7 @@
 import React, { useMemo, useState, useEffect } from 'react'
 import universidadesData from './data/universidades'
 import CountdownCard from './components/CountdownCard'
+import GoogleAd from './components/GoogleAd'
 
 export default function App() {
   const [query, setQuery] = useState('')
@@ -44,6 +45,9 @@ export default function App() {
           </button>
         </div>
       </header>
+
+      {/* 📋 OPCIÓN 1: Anuncio entre Header y Main */}
+      <GoogleAd />
 
       <main>
         <section className="grid">
