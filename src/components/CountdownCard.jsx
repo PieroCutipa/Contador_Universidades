@@ -15,7 +15,9 @@ export default function CountdownCard({ nombre, expanded = false }) {
   useEffect(() => {
     let cancelled = false
     setState({ loading: true, data: null, error: null })
-    const base = (import.meta.env.VITE_API_BASE) || 'http://localhost:5174'
+    // Usar la misma IP/host que el frontend para el backend (cambiando solo el puerto)
+    const currentHost = window.location.hostname
+    const base = (import.meta.env.VITE_API_BASE) || `http://${currentHost}:5174`
     fetch(`${base}/api/university?name=${encodeURIComponent(nombre)}`)
       .then(r => r.json())
       .then(j => {
