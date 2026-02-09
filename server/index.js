@@ -5,6 +5,9 @@ const { searchWeb } = require('./search')
 const { analyzeWithAI } = require('./ai')
 const { predictHistorically } = require('./predict')
 
+// Cargar datos locales de universidades
+const universidades = require('../src/data/universidades').default || require('../src/data/universidades')
+
 dotenv.config()
 
 const app = express()
@@ -21,6 +24,19 @@ app.get('/api/university', async (req, res) => {
   if (!name) return res.status(400).json({ error: 'missing name' })
 
   try {
+    // 0) Primero revisar datos locales - si tiene fecha oficial con buena confianza, usarla
+    const localData = universidades.find(u => u.nombre.toLowerCase() === name.toLowerCase())
+    if (localData && localData.inicioOficial && localData.confianza >= 0.6) {
+      console.log(`Using local data for ${name}: confianza=${localData.confianza}`)
+      return res.json({
+        date: localData.inicioOficial,
+        official: localData.tipo === 'oficial',
+        source: localData.fuente || 'datos-locales',
+        confidence: localData.confianza,
+        usedFallback: false
+      })
+    }
+
     // 1) Buscar en la web (configurable provider)
     const searchResults = await searchWeb(name)
 
@@ -51,4 +67,5 @@ app.get('/api/university', async (req, res) => {
 })
 
 const port = process.env.PORT || 5174
-app.listen(port, () => console.log(`Server listening on ${port}`))
+// Escuchar en todas las interfaces (0.0.0.0) para acceso desde red local
+app.listen(port, '0.0.0.0', () => console.log(`Server listening on 0.0.0.0:${port}`))

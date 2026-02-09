@@ -3,7 +3,7 @@ const fetch = require('node-fetch')
 async function searchWeb(query) {
   // Implementadores: SerpAPI, Bing Web Search, etc.
   // Priorizar proveedor configurado mediante variables de entorno.
-  if (!process.env.AI_API_KEY) {
+  if (!process.env.SERPAPI_KEY) {
     console.log('searchWeb: SERPAPI_KEY not set — returning empty results to trigger fallback')
     return []
   }
